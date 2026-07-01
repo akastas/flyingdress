@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#F2EEE4;}
+  body{-webkit-font-smoothing:antialiased;}
+  ::selection{background:#191512;color:#F2EEE4;}
+  @keyframes vMarquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  @keyframes vFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes vScrollCue{0%{transform:translateY(0);opacity:.9}50%{transform:translateY(8px);opacity:.3}100%{transform:translateY(0);opacity:.9}}
+  @media (max-width:820px){
+    .v-nav{padding:16px 18px !important;}
+    .v-links{gap:15px !important;font-size:10.5px !important;}
+    .v-gallery{grid-template-columns:1fr !important;gap:14px !important;}
+    .v-gallery>div{grid-column:auto !important;aspect-ratio:4/5 !important;min-height:0 !important;}
+    .v-includes-wrap{grid-template-columns:1fr !important;gap:30px !important;margin-top:58px !important;}
+    .v-loc-row{grid-template-columns:40px 1fr !important;padding:20px 18px !important;}
+    .v-loc-region{display:none !important;}
+    .v-pad{padding-left:18px !important;padding-right:18px !important;}
+    .v-sec{padding-top:80px !important;padding-bottom:70px !important;}
+  }
+
+  .v-gallery-img-container {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(25,21,18,.1);
+    background: #e6dfce;
+  }
+  .v-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(.2,.8,.2,1);
+  }
+  .v-gallery-img-container:hover .v-gallery-img {
+    transform: scale(1.05);
+  }
+  .v-gallery-label {
+    position: absolute;
+    left: 16px;
+    bottom: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    color: #F2EEE4;
+    text-transform: uppercase;
+    text-shadow: 0 1px 6px rgba(0,0,0,.45);
+    z-index: 2;
+  }
+  .v-gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(25,21,18,0.35) 0%, rgba(25,21,18,0) 40%);
+    pointer-events: none;
+    z-index: 1;
+  }
+</style>
+</helmet>
+<div style="background:#F2EEE4;color:#191512;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;overflow-x:hidden;position:relative;">
+
+  <!-- floating cursor preview -->
+  <div id="v-preview-element" ref="{{ previewRef }}" style="{{ previewStyle }}">
+    <div style="position:absolute;inset:0;display:flex;align-items:flex-end;padding:18px;">
+      <span style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.04em;color:#F2EEE4;text-transform:uppercase;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.5);">{{ previewLabel }}</span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="v-nav" style="position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;padding:24px 34px;mix-blend-mode:difference;color:#ffffff;">
+    <a href="#top" style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:26px;letter-spacing:.32em;color:#ffffff;text-decoration:none;">VOLARE</a>
+    <div class="v-links" style="display:flex;gap:32px;align-items:center;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:lowercase;">
+      <a href="#locations" style="color:#ffffff;text-decoration:none;">locations</a>
+      <a href="#experience" style="color:#ffffff;text-decoration:none;">experience</a>
+      <a href="#contact" style="color:#ffffff;text-decoration:none;">contacts</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="top" style="position:relative;height:100svh;min-height:560px;width:100%;overflow:hidden;background:#120c0a;">
+    <!-- MEDIA SLOT — swap this div for <video autoplay muted loop playsinline> or <img>, position:absolute;inset:0;object-fit:cover -->
+    <video autoPlay muted defaultMuted loop playsInline poster="./assets/roma_red.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;">
+      <source src="./assets/hero_bg.mp4" type="video/mp4">
+    </video>
+    <!-- strong golden-hour colour grade over the media -->
+    <div style="position:absolute;inset:0;background:linear-gradient(158deg,rgba(64,150,236,.36) 0%,rgba(28,72,168,.3) 46%,rgba(7,16,38,.7) 100%);mix-blend-mode:multiply;"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(125% 78% at 50% 34%,rgba(0,0,0,0) 42%,rgba(8,4,3,.62) 100%);"></div>
+    <div style="position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 22px;">
+      <span style="font-family:'Space Mono',monospace;font-size:clamp(10px,1.4vw,13px);letter-spacing:.52em;color:rgba(247,242,231,.88);text-transform:uppercase;margin-bottom:clamp(16px,3vw,32px);padding-left:.52em;">Flying Dress · Italy</span>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-style:italic;color:#F7F2E7;font-size:clamp(80px,21vw,300px);line-height:.84;margin:0;letter-spacing:.015em;text-shadow:0 8px 50px rgba(0,0,0,.4);">Volare</h1>
+    </div>
+    <div style="position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:rgba(247,242,231,.7);text-transform:uppercase;">scroll</span>
+      <div style="width:1px;height:30px;background:rgba(247,242,231,.5);animation:vScrollCue 2.2s ease-in-out infinite;"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <sc-if value="{{ showMarquee }}" hint-placeholder-val="{{ true }}">
+    <div style="border-top:1px solid rgba(25,21,18,.14);border-bottom:1px solid rgba(25,21,18,.14);overflow:hidden;white-space:nowrap;padding:22px 0;background:#F2EEE4;">
+      <div style="display:inline-flex;animation:vMarquee 26s linear infinite;will-change:transform;">
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(34px,5vw,64px);color:#191512;">&nbsp;Roma&nbsp;·&nbsp;Amalfi&nbsp;·&nbsp;Positano&nbsp;·&nbsp;Toscana&nbsp;·&nbsp;Venezia&nbsp;·&nbsp;Lago di Como&nbsp;·&nbsp;</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(34px,5vw,64px);color:#191512;">&nbsp;Roma&nbsp;·&nbsp;Amalfi&nbsp;·&nbsp;Positano&nbsp;·&nbsp;Toscana&nbsp;·&nbsp;Venezia&nbsp;·&nbsp;Lago di Como&nbsp;·&nbsp;</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- MANIFESTO -->
+  <section style="max-width:1180px;margin:0 auto;padding:130px 34px 110px;">
+    <div style="display:flex;gap:18px;align-items:baseline;margin-bottom:48px;">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;">(01)</span>
+      <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;">The Idea</span>
+    </div>
+    <p style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(28px,4.6vw,58px);line-height:1.18;margin:0;max-width:980px;letter-spacing:-.005em;">A flowing dress, a sweep of wind, and a backdrop only Italy can offer. We direct the moment your gown takes flight — and capture it as a film and a series of prints you'll keep forever.</p>
+  </section>
+
+  <!-- LOCATIONS -->
+  <section id="locations" style="padding:30px 0 120px;" onMouseMove="{{ onListMove }}" onMouseLeave="{{ onListLeave }}">
+    <div style="max-width:1180px;margin:0 auto;padding:0 34px;display:flex;align-items:baseline;gap:18px;margin-bottom:30px;">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;">(02)</span>
+      <h2 style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;font-weight:400;margin:0;">Locations</h2>
+    </div>
+    <div style="border-top:1px solid rgba(25,21,18,.16);">
+      <sc-for list="{{ locations }}" as="loc" hint-placeholder-count="6">
+        <a href="#contact" class="v-loc-row" onMouseEnter="{{ loc.onEnter }}" style="display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 34px;border-bottom:1px solid rgba(25,21,18,.16);text-decoration:none;color:#191512;transition:padding .4s cubic-bezier(.2,.8,.2,1),background .4s ease;cursor:pointer;max-width:1180px;margin:0 auto;width:100%;" style-hover="display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 34px 30px 58px;border-bottom:1px solid rgba(25,21,18,.16);text-decoration:none;color:#191512;background:#ECE6D8;cursor:pointer;max-width:1180px;margin:0 auto;width:100%;">
+          <span style="font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.08em;color:#6f675c;">{{ loc.num }}</span>
+          <span style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,6vw,76px);line-height:1;letter-spacing:-.01em;">{{ loc.name }}</span>
+          <span class="v-loc-region" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6f675c;text-transform:uppercase;text-align:right;">{{ loc.region }}</span>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section style="max-width:1180px;margin:0 auto;padding:10px 34px 120px;">
+    <div style="display:flex;align-items:baseline;gap:18px;margin-bottom:40px;">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;">(03)</span>
+      <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;">Selected Frames</span>
+    </div>
+    <div class="v-gallery" style="display:grid;grid-template-columns:repeat(12,1fr);gap:20px;">
+      <div class="v-gallery-img-container" style="grid-column:span 7;aspect-ratio:4/5;">
+        <img class="v-gallery-img" src="./assets/amalfi_blue.png" alt="Positano Flying Dress photoshoot">
+        <div class="v-gallery-overlay"></div>
+        <span class="v-gallery-label">[ positano — pastel stairway, dress mid-flight ]</span>
+      </div>
+      <div style="grid-column:span 5;display:flex;flex-direction:column;gap:20px;">
+        <div class="v-gallery-img-container" style="flex:1;min-height:180px;">
+          <img class="v-gallery-img" src="./assets/venice_green.png" alt="Venice Flying Dress photoshoot">
+          <div class="v-gallery-overlay"></div>
+          <span class="v-gallery-label">[ venice — canal, blue hour ]</span>
+        </div>
+        <div class="v-gallery-img-container" style="flex:1;min-height:180px;">
+          <img class="v-gallery-img" src="./assets/tuscany_gold.png" alt="Tuscany Flying Dress photoshoot">
+          <div class="v-gallery-overlay"></div>
+          <span class="v-gallery-label">[ tuscany — cypress ridge ]</span>
+        </div>
+      </div>
+      <div class="v-gallery-img-container" style="grid-column:span 4;aspect-ratio:3/4;">
+        <img class="v-gallery-img" src="./assets/roma_red.png" alt="Rome Flying Dress photoshoot">
+        <div class="v-gallery-overlay"></div>
+        <span class="v-gallery-label">[ rome — colonnade, dawn ]</span>
+      </div>
+      <div class="v-gallery-img-container" style="grid-column:span 8;aspect-ratio:16/9;">
+        <img class="v-gallery-img" src="./assets/amalfi_blue.png" style="object-position: center 40%;" alt="Amalfi Flying Dress photoshoot">
+        <div class="v-gallery-overlay"></div>
+        <span class="v-gallery-label">[ amalfi — wide cliff film still, full train extended ]</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" style="background:#1a1611;color:#F2EEE4;padding:120px 0;">
+    <div style="max-width:1180px;margin:0 auto;padding:0 34px;">
+      <div style="display:flex;align-items:baseline;gap:18px;margin-bottom:60px;">
+        <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:rgba(242,238,228,.5);text-transform:uppercase;">(04)</span>
+        <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:rgba(242,238,228,.5);text-transform:uppercase;">The Experience</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:48px 40px;">
+        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+          <div style="border-top:1px solid rgba(242,238,228,.2);padding-top:24px;">
+            <span style="font-family:'Space Mono',monospace;font-size:12px;color:rgba(242,238,228,.5);letter-spacing:.08em;">{{ st.num }}</span>
+            <h3 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:30px;margin:14px 0 12px;line-height:1.1;">{{ st.title }}</h3>
+            <p style="font-size:14.5px;line-height:1.65;color:rgba(242,238,228,.72);margin:0;font-weight:300;">{{ st.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+      <div class="v-includes-wrap" style="margin-top:90px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;">
+        <div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(30px,4vw,48px);margin:0;line-height:1.1;">Every session<br>includes</h3>
+        </div>
+        <ul style="list-style:none;margin:0;padding:0;font-family:'Space Mono',monospace;">
+          <sc-for list="{{ includes }}" as="inc" hint-placeholder-count="5">
+            <li style="display:flex;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid rgba(242,238,228,.18);font-size:13px;letter-spacing:.04em;text-transform:uppercase;">
+              <span style="color:#F2EEE4;">{{ inc.label }}</span>
+              <span style="color:rgba(242,238,228,.5);text-align:right;">{{ inc.detail }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="padding:150px 34px 90px;text-align:center;">
+    <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.2em;color:#6f675c;text-transform:uppercase;">(05) — Book your flight</span>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(48px,10vw,140px);line-height:.95;margin:30px 0 0;">Let's make<br><span style="font-style:normal;font-weight:400;">it fly.</span></h2>
+    <a href="mailto:ciao@volare.studio" style="display:inline-block;margin-top:50px;font-family:'Space Mono',monospace;font-size:clamp(15px,2.4vw,22px);letter-spacing:.06em;color:#191512;text-decoration:none;border-bottom:1px solid #191512;padding-bottom:6px;">ciao@volare.studio</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid rgba(25,21,18,.16);padding:36px 34px;display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;color:#6f675c;text-transform:uppercase;">
+    <span>Volare — Flying Dress Italy</span>
+    <a href="https://www.instagram.com/" style="color:#191512;text-decoration:none;">@volare_studio</a>
+    <span>©2026 — Roma · Italia</span>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;showMarquee&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;floatingPreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locations list&quot;},&quot;previewSize&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Medium&quot;,&quot;options&quot;:[&quot;Small&quot;,&quot;Medium&quot;,&quot;Large&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Locations list&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { active: null };
+    this.previewRef = React.createRef();
+    this.onListMove = this.onListMove.bind(this);
+    this.onListLeave = this.onListLeave.bind(this);
+  }
+
+  componentDidMount() {
+    const video = document.querySelector('video');
+    if (video) {
+      video.muted = true;
+      video.play().catch(err => {
+        console.log("Autoplay blocked, waiting for user click:", err);
+        const playVideo = () => {
+          video.play().catch(e => console.log(e));
+          window.removeEventListener('click', playVideo);
+          window.removeEventListener('touchstart', playVideo);
+        };
+        window.addEventListener('click', playVideo);
+        window.addEventListener('touchstart', playVideo);
+      });
+    }
+  }
+
+  data(){
+    return [
+      { num:"01", name:"Roma",          region:"Lazio",      cap:"Roma — colonnade & cobblestone, dawn light", img: "./assets/roma_red.png" },
+      { num:"02", name:"Costiera Amalfitana", region:"Campania", cap:"Amalfi — silk train above the sea, golden hour", img: "./assets/amalfi_blue.png" },
+      { num:"03", name:"Positano",      region:"Campania",   cap:"Positano — pastel stairways, dress mid-flight", img: "./assets/amalfi_blue.png" },
+      { num:"04", name:"Toscana",       region:"Val d'Orcia",cap:"Tuscany — cypress ridge, wind-swept fabric", img: "./assets/tuscany_gold.png" },
+      { num:"05", name:"Venezia",       region:"Veneto",     cap:"Venice — canal reflections at blue hour", img: "./assets/venice_green.png" },
+      { num:"06", name:"Lago di Como",  region:"Lombardia",  cap:"Lake Como — villa terrace over the water", img: "./assets/como_white.png" },
+    ];
+  }
+
+  onListMove(e){
+    const el = this.previewRef.current;
+    if(el){ el.style.left = e.clientX + "px"; el.style.top = e.clientY + "px"; }
+  }
+  onListLeave(){ this.setState({ active:null }); }
+
+  renderVals(){
+    const floating = this.props.floatingPreview ?? true;
+    const sizes = { Small:[280,350], Medium:[360,450], Large:[440,550] };
+    const [w,h] = sizes[this.props.previewSize] || sizes.Medium;
+    const locs = this.data();
+    const active = this.state.active;
+    const activeLoc = active != null ? locs[active] : null;
+
+    const previewStyle = {
+      position:"fixed", top:0, left:0, width:w+"px", height:h+"px",
+      transform:"translate(-50%,-50%)", pointerEvents:"none", zIndex:80,
+      opacity:(floating && active!=null) ? 1 : 0,
+      transition:"opacity .4s ease, background-image 0.2s ease", willChange:"transform",
+      backgroundImage: activeLoc ? `url(${activeLoc.img})` : "repeating-linear-gradient(135deg,#2a2419 0 16px,#332b1e 16px 32px)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundColor:"#241e15",
+      boxShadow:"0 30px 80px rgba(0,0,0,.35)",
+      border:"1px solid rgba(242,238,228,.15)",
+    };
+
+    return {
+      locations: locs.map((l,i)=>({ ...l, onEnter: ()=> this.setState({ active:i }) })),
+      showMarquee: this.props.showMarquee ?? true,
+      previewRef: this.previewRef,
+      onListMove: this.onListMove,
+      onListLeave: this.onListLeave,
+      previewStyle,
+      previewLabel: active!=null ? ("[ "+locs[active].cap+" ]") : "",
+      steps: [
+        { num:"i", title:"Consult & style", body:"We plan your gown, location, and the light. Choose from our atelier of flying dresses or bring your own." },
+        { num:"ii", title:"On location", body:"A director, photographer, and an assistant to throw and shape the fabric. Sunrise calls keep the coast to ourselves." },
+        { num:"iii", title:"The flight", body:"We choreograph each gust and movement so the dress reads as motion — never a static pose." },
+        { num:"iv", title:"Film & prints", body:"A short cinematic edit plus a curated gallery of retouched stills, delivered as fine-art prints." },
+      ],
+      includes: [
+        { label:"Gown rental", detail:"Atelier of 20+ dresses" },
+        { label:"Direction", detail:"Full creative team" },
+        { label:"Photo + film", detail:"Stills & cinematic reel" },
+        { label:"Retouching", detail:"Editorial grade" },
+        { label:"Delivery", detail:"Gallery + fine-art prints" },
+      ],
+    };
+  }
+}
+</script>
+<script>
+  window.addEventListener('mousemove', (e) => {
+    const el = document.getElementById('v-preview-element');
+    if (el) {
+      el.style.left = e.clientX + 'px';
+      el.style.top = e.clientY + 'px';
+    }
+  });
+</script>
+</body>
+</html>
