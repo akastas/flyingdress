@@ -1,0 +1,8 @@
+{
+  "name": "flying-dress-italy",
+  "version": "1.0.0",
+  "description": "Volare Flying Dress Italy photoshoot booking website",
+  "scripts": {
+    "build": "node -e \"const fs = require('fs'); fs.copyFileSync('Volare Flying Dress.dc.html', 'index.html');\""
+  }
+}
