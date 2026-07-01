@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "Volare Flying Dress Italy photoshoot booking website",
   "scripts": {
-    "build": "node -e \"const fs = require('fs'); fs.copyFileSync('Volare Flying Dress.dc.html', 'index.html');\""
+    "build": "node -e \"const fs = require('fs'); fs.rmSync('public', {recursive:true, force:true}); fs.mkdirSync('public', {recursive:true}); fs.copyFileSync('Volare Flying Dress.dc.html', 'public/index.html'); fs.copyFileSync('support.js', 'public/support.js'); fs.cpSync('assets', 'public/assets', {recursive:true});\""
   }
 }
