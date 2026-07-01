@@ -69,12 +69,7 @@
 </helmet>
 <div style="background:#F2EEE4;color:#191512;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;overflow-x:hidden;position:relative;">
 
-  <!-- floating cursor preview -->
-  <div id="v-preview-element" ref="{{ previewRef }}" style="{{ previewStyle }}">
-    <div style="position:absolute;inset:0;display:flex;align-items:flex-end;padding:18px;">
-      <span style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.04em;color:#F2EEE4;text-transform:uppercase;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.5);">{{ previewLabel }}</span>
-    </div>
-  </div>
+
 
   <!-- NAV -->
   <nav class="v-nav" style="position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;padding:24px 34px;mix-blend-mode:difference;color:#ffffff;">
@@ -125,14 +120,14 @@
   </section>
 
   <!-- LOCATIONS -->
-  <section id="locations" style="padding:30px 0 120px;" onMouseMove="{{ onListMove }}" onMouseLeave="{{ onListLeave }}">
+  <section id="locations" style="padding:30px 0 120px;">
     <div style="max-width:1180px;margin:0 auto;padding:0 34px;display:flex;align-items:baseline;gap:18px;margin-bottom:30px;">
       <span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;">(02)</span>
       <h2 style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:#6f675c;text-transform:uppercase;font-weight:400;margin:0;">Locations</h2>
     </div>
     <div style="border-top:1px solid rgba(25,21,18,.16);">
       <sc-for list="{{ locations }}" as="loc" hint-placeholder-count="6">
-        <a href="#contact" class="v-loc-row" onMouseEnter="{{ loc.onEnter }}" style="display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 34px;border-bottom:1px solid rgba(25,21,18,.16);text-decoration:none;color:#191512;transition:padding .4s cubic-bezier(.2,.8,.2,1),background .4s ease;cursor:pointer;max-width:1180px;margin:0 auto;width:100%;" style-hover="display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 34px 30px 58px;border-bottom:1px solid rgba(25,21,18,.16);text-decoration:none;color:#191512;background:#ECE6D8;cursor:pointer;max-width:1180px;margin:0 auto;width:100%;">
+        <a href="#contact" class="v-loc-row" style="display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 34px;border-bottom:1px solid rgba(25,21,18,.16);text-decoration:none;color:#191512;transition:padding .4s cubic-bezier(.2,.8,.2,1),background .4s ease;cursor:pointer;max-width:1180px;margin:0 auto;width:100%;" style-hover="display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:24px;padding:30px 34px 30px 58px;border-bottom:1px solid rgba(25,21,18,.16);text-decoration:none;color:#191512;background:#ECE6D8;cursor:pointer;max-width:1180px;margin:0 auto;width:100%;">
           <span style="font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.08em;color:#6f675c;">{{ loc.num }}</span>
           <span style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(34px,6vw,76px);line-height:1;letter-spacing:-.01em;">{{ loc.name }}</span>
           <span class="v-loc-region" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6f675c;text-transform:uppercase;text-align:right;">{{ loc.region }}</span>
@@ -230,10 +225,6 @@
 class Component extends DCLogic {
   constructor(props){
     super(props);
-    this.state = { active: null };
-    this.previewRef = React.createRef();
-    this.onListMove = this.onListMove.bind(this);
-    this.onListLeave = this.onListLeave.bind(this);
   }
 
   componentDidMount() {
@@ -255,50 +246,21 @@ class Component extends DCLogic {
 
   data(){
     return [
-      { num:"01", name:"Roma",          region:"Lazio",      cap:"Roma — colonnade & cobblestone, dawn light", img: "./assets/roma_red.png" },
-      { num:"02", name:"Costiera Amalfitana", region:"Campania", cap:"Amalfi — silk train above the sea, golden hour", img: "./assets/amalfi_blue.png" },
-      { num:"03", name:"Positano",      region:"Campania",   cap:"Positano — pastel stairways, dress mid-flight", img: "./assets/amalfi_blue.png" },
-      { num:"04", name:"Toscana",       region:"Val d'Orcia",cap:"Tuscany — cypress ridge, wind-swept fabric", img: "./assets/tuscany_gold.png" },
-      { num:"05", name:"Venezia",       region:"Veneto",     cap:"Venice — canal reflections at blue hour", img: "./assets/venice_green.png" },
-      { num:"06", name:"Lago di Como",  region:"Lombardia",  cap:"Lake Como — villa terrace over the water", img: "./assets/como_white.png" },
+      { num:"01", name:"Roma",          region:"Lazio",      cap:"Roma — colonnade & cobblestone, dawn light" },
+      { num:"02", name:"Costiera Amalfitana", region:"Campania", cap:"Amalfi — silk train above the sea, golden hour" },
+      { num:"03", name:"Positano",      region:"Campania",   cap:"Positano — pastel stairways, dress mid-flight" },
+      { num:"04", name:"Toscana",       region:"Val d'Orcia",cap:"Tuscany — cypress ridge, wind-swept fabric" },
+      { num:"05", name:"Venezia",       region:"Veneto",     cap:"Venice — canal reflections at blue hour" },
+      { num:"06", name:"Lago di Como",  region:"Lombardia",  cap:"Lake Como — villa terrace over the water" },
     ];
   }
 
-  onListMove(e){
-    const el = this.previewRef.current;
-    if(el){ el.style.left = e.clientX + "px"; el.style.top = e.clientY + "px"; }
-  }
-  onListLeave(){ this.setState({ active:null }); }
-
   renderVals(){
-    const floating = this.props.floatingPreview ?? true;
-    const sizes = { Small:[280,350], Medium:[360,450], Large:[440,550] };
-    const [w,h] = sizes[this.props.previewSize] || sizes.Medium;
     const locs = this.data();
-    const active = this.state.active;
-    const activeLoc = active != null ? locs[active] : null;
-
-    const previewStyle = {
-      position:"fixed", top:0, left:0, width:w+"px", height:h+"px",
-      transform:"translate(-50%,-50%)", pointerEvents:"none", zIndex:80,
-      opacity:(floating && active!=null) ? 1 : 0,
-      transition:"opacity .4s ease, background-image 0.2s ease", willChange:"transform",
-      backgroundImage: activeLoc ? `url(${activeLoc.img})` : "repeating-linear-gradient(135deg,#2a2419 0 16px,#332b1e 16px 32px)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundColor:"#241e15",
-      boxShadow:"0 30px 80px rgba(0,0,0,.35)",
-      border:"1px solid rgba(242,238,228,.15)",
-    };
 
     return {
-      locations: locs.map((l,i)=>({ ...l, onEnter: ()=> this.setState({ active:i }) })),
+      locations: locs,
       showMarquee: this.props.showMarquee ?? true,
-      previewRef: this.previewRef,
-      onListMove: this.onListMove,
-      onListLeave: this.onListLeave,
-      previewStyle,
-      previewLabel: active!=null ? ("[ "+locs[active].cap+" ]") : "",
       steps: [
         { num:"i", title:"Consult & style", body:"We plan your gown, location, and the light. Choose from our atelier of flying dresses or bring your own." },
         { num:"ii", title:"On location", body:"A director, photographer, and an assistant to throw and shape the fabric. Sunrise calls keep the coast to ourselves." },
@@ -315,15 +277,6 @@ class Component extends DCLogic {
     };
   }
 }
-</script>
-<script>
-  window.addEventListener('mousemove', (e) => {
-    const el = document.getElementById('v-preview-element');
-    if (el) {
-      el.style.left = e.clientX + 'px';
-      el.style.top = e.clientY + 'px';
-    }
-  });
 </script>
 </body>
 </html>
